@@ -9,6 +9,9 @@ class AvailableFlight
 		@arrival = arrival
 		@price = price
 	end
-
+  
+  def flight_time(arrival, departure)
+   duration = (Time.parse(arrival) - Time.parse(departure))/3600
+  end
 
 end
