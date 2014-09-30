@@ -1,5 +1,5 @@
 class AvailableFlight
-
+  
 	attr_accessor :from, :to, :departure, :arrival, :price
 
 	def initialize from, to, departure, arrival, price
@@ -14,4 +14,5 @@ class AvailableFlight
    duration = (Time.parse(arrival) - Time.parse(departure))/3600
   end
 
+  
 end
