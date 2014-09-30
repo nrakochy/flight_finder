@@ -19,7 +19,7 @@ class CheapestFlightFinder
       last_arrival_time = cheapest_choice.arrival
     end
     
-    sum_total_flight_cost(flight_routes_taken)
+    sum_total_flight_details(flight_routes_taken)
     
   end
   
@@ -50,7 +50,7 @@ class CheapestFlightFinder
   end
 
   
-  def sum_total_flight_costs(total_flight_routes)
+  def sum_total_flight_details(total_flight_routes)
     departure_time = total_flight_routes.first.departure
     arrival_time = total_flight_routes.last.arrival
     cost = 0

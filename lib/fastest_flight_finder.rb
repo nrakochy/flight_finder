@@ -4,6 +4,12 @@ class FastestFlightFinder
 
 	attr_accessor :fastest_flight
   
+  def find_fastest_flight_path(available_flights)
+    fastest_flight = fastest_flight_sequence(available_flights)
+    convert_to_single_itinerary(fastest_flight)
+  end
+  
+  
   def flight_time(arrival, departure)
    duration = (Time.parse(arrival) - Time.parse(departure))/3600
   end
@@ -20,7 +26,7 @@ class FastestFlightFinder
     
   
 	def convert_to_single_itinerary(fastest_flight)
-    itinerary = [fastest_flight.departure, fastest_flight.arrival, fastest_flight.price]
+    [fastest_flight.departure, fastest_flight.arrival, fastest_flight.price]
   end
 
 

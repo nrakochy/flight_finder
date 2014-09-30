@@ -1,4 +1,5 @@
 require 'available_flight'
+
 class FlightCreator
 
   def evaluate_data_file flight_data_file 

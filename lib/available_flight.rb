@@ -1,3 +1,4 @@
+require 'time'
 class AvailableFlight
   
 	attr_accessor :from, :to, :departure, :arrival, :price
