@@ -13,12 +13,6 @@ describe CheapestFlightFinder
   	end
 =end
     
-    before :each do 
-      @cheapest_itinerary = ['02:00', '17:00', 300.00]
-      @available_flights = [CheapestFlightFinder.new('A', 'Z', '09:00', '10:00', 1000.00), CheapestFlightFinder.new('A', 'B', '02:00', '05:00', 100.00), CheapestFlightFinder.new('B', 'Z', '06:00', '12:00', 700.00), 
-      CheapestFlightFinder.new('B', 'F', '09:00', '13:00', 100.00), CheapestFlightFinder.new('F', 'Z', '14:00', '17:00', 100.00)]
-  	end
-    
 		xit '.next_cheapest_flight' do
 			expect(@available_flights.next_cheapest_flight(@available_flights)).to eq(@available_flights[1])
 		end
