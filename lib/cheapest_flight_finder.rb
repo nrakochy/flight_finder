@@ -1,13 +1,12 @@
 class CheapestFlightFinder
   
-  STARTING_POINT = 'A'
   DESTINATION = 'Z'
-  STARTING_DEPARTURE_TIME = '00:00'
+  SECONDS_IN_HOUR = 3600
     
-  def cheapest_flight_path(all_available_flights)
-    current_location = STARTING_POINT
-    last_arrival_time = STARTING_DEPARTURE_TIME
-    flight_routes_taken = []
+  def cheapest_flight_path(all_available_flights, starting_point)
+    current_location = starting_point.from
+    last_arrival_time = starting_point.arrival
+    flight_routes_taken = [starting_point]
     
     while flight_routes_taken.last.to != DESTINATION
       routes_backwards_reduction = all_available_flights.does_not_go_backwards(current_location)
@@ -24,7 +23,7 @@ class CheapestFlightFinder
   end
   
   def flight_time(arrival, departure)
-    duration = (Time.parse(arrival) - Time.parse(departure))/3600
+    duration = (Time.parse(arrival) - Time.parse(departure))/SECONDS_IN_HOUR
   end
   
   def does_not_go_backwards(current_location)

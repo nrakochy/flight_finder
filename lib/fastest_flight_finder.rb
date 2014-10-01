@@ -1,8 +1,6 @@
 require 'time'
 
 class FastestFlightFinder
-
-	attr_accessor :fastest_flight
   
   def find_fastest_flight_path(available_flights)
     fastest_flight = fastest_flight_sequence(available_flights)
