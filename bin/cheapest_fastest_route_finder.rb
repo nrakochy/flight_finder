@@ -2,9 +2,6 @@ require_relative 'flight_creator'
 
 class CheapestFastestRouteFinder
   
-  def initialize textfile
-  end
-  
   def find_the_flight_paths(textfile)
     all_flight_data_sets = FlightCreator.new(textfile)
     all_flight_data_sets.each do |data_set|
@@ -19,3 +16,4 @@ class CheapestFastestRouteFinder
   
 end
 
+CheapestFastestRouteFinder.new.find_the_flight_paths('input.txt')
