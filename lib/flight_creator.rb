@@ -3,8 +3,7 @@ require File.join(File.expand_path(File.dirname(__FILE__)), 'available_flight')
 
 class FlightCreator
   
-  FLIGHT_ARRAY_INDICATOR = 1
-  MINIMUM_FLIGHT_CHOICE = 2
+  FLIGHT_ARRAY_INDICATOR = 4
       
   def initialize parsed_flight_file_data_array
   end
@@ -18,7 +17,7 @@ class FlightCreator
     all_flights = []
     num_flights_available = []
     parsed_flight_file_data_array.each do |line_arr|
-      if line_arr.length == FLIGHT_ARRAY_INDICATOR && line_arr.to_i != MINIMUM_FLIGHT_CHOICE
+      if line_arr.length <= FLIGHT_ARRAY_INDICATOR && line_arr.to_i != 0
         num_flights_available << line_arr.to_i
       elsif line_arr.length > FLIGHT_ARRAY_INDICATOR
         all_flights << make_flight_object(line_arr)  
@@ -35,15 +34,13 @@ class FlightCreator
     flight_data_set = []
     all_available_flights_set = []
     
-    num_available_flights.map! do |num_of_flights|
+    num_available_flights.map do |num_of_flights|
       x = 0
       while x < num_of_flights
         flight_data_set << all_flights.shift
-        puts all_flights.length
         x += 1
       end
       all_available_flights_set << flight_data_set
-      flight_data_set = []
     end
     all_available_flights_set
   end

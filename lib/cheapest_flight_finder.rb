@@ -6,25 +6,20 @@ class CheapestFlightFinder
   SECONDS_IN_HOUR = 3600
     
   def find_cheapest_flight_path(all_available_flights, starting_point_obj)
-    current_location = starting_point_obj.from
-    last_arrival_time = starting_point_obj.arrival
     flight_routes_taken = []
-    flight_obj = starting_point_obj
     cheapest_choice = starting_point_obj
     
     while cheapest_choice.to != DESTINATION
+      current_location = cheapest_choice.to
+      last_arrival_time = cheapest_choice.arrival
+      puts "Here's all_available_flights.length #{all_available_flights.length}"
       valid_flight_options = AvailableFlightPoolReducer.new.reduce_invalid_departure_sites_and_times_from_starting_point(current_location, last_arrival_time, all_available_flights)
       cheapest_choice = find_cheapest_choice(valid_flight_options)
       flight_routes_taken.push(cheapest_choice)
-      cheapest_choice.class
-      current_location = cheapest_choice.to
-      last_arrival_time = cheapest_choice.arrival
+      puts "Here is flight routes taken #{flight_routes_taken}"
       cheapest_choice
     end
-    
-    flight_itinerary = sum_total_flight_details(flight_routes_taken)
-    puts "Here is the cheapest flight itinerary inside the cheapest_flight_itinerary #{flight_itinerary}. Need to price edge case"
-    
+      sum_total_flight_details(flight_routes_taken)
   end
 
   def find_cheapest_choice(valid_flight_options)

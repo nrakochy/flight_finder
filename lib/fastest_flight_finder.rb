@@ -14,15 +14,13 @@ class FastestFlightFinder
   
   def identify_final_flight_route all_available_flights
     terminating_flights = identify_flights_terminating_at_destination(all_available_flights)
-    
     final_flight_route = nil
+    
     terminating_flights.each do |possible_flight|
       final_flight_route ||= possible_flight
-      puts final_flight_route.class
       final_flight_route = possible_flight if possible_flight.arrival.to_i < final_flight_route.arrival.to_i
     end
-    final_flight_route
-    puts "Here is the final route departure location #{final_flight_route.from} and here is it's class #{final_flight_route.from.class}"
+    
     final_flight_route
   end
   
@@ -47,14 +45,12 @@ class FastestFlightFinder
         next_fastest_choice
     end
     
-    
     flight_routes_taken
   end    
   
 	def sum_total_flight_details(flight_routes_taken)
     cost = 0
     flight_routes_taken.each{|flight_obj| cost += flight_obj.price}
-    
     [flight_routes_taken.first.departure, flight_routes_taken.last.arrival, cost]
   end
   
