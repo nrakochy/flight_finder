@@ -1,54 +1,55 @@
 require File.join(File.expand_path(File.dirname(__FILE__)), 'available_flight')
 
+
 class FlightCreator
   
-  FLIGHT_ARRAY_INDICATOR = 2
+  FLIGHT_ARRAY_INDICATOR = 1
   MINIMUM_FLIGHT_CHOICE = 2
-    
-  def evaluate_flight_data
-    flight_file = open_file
-    parsed_flights = parse_flight_data_file(flight_file) 
-    all_available_flight_data_sets = create_flight_data_sets(parsed_flights[0], parsed_flights[1])
+      
+  def initialize parsed_flight_file_data_array
   end
   
-  def parse_flight_data_file flight_file
+  def evaluate_flight_data parsed_flight_file_data_array
+    all_flight_objects_in_data_file = create_all_flight_objects(parsed_flight_file_data_array) 
+    all_available_flight_data_sets = create_all_flight_data_sets(all_flight_objects_in_data_file)
+  end
+  
+  def create_all_flight_objects parsed_flight_file_data_array
     all_flights = []
     num_flights_available = []
-    
-    flight_file.each do |line_arr|
+    parsed_flight_file_data_array.each do |line_arr|
       if line_arr.length == FLIGHT_ARRAY_INDICATOR && line_arr.to_i != MINIMUM_FLIGHT_CHOICE
         num_flights_available << line_arr.to_i
       elsif line_arr.length > FLIGHT_ARRAY_INDICATOR
-        all_flights << make_flight_object(line_arr)
+        all_flights << make_flight_object(line_arr)  
       else line_arr.next
-      end  
+      end
     end
-    
     parsed_flights = [num_flights_available, all_flights]
   end
   
-  def open_file
-   File.open(File.join(File.expand_path(File.dirname(__FILE__)), "input.txt"), 'r'){|data_file| data_file.readlines}
-  end
-  
-  def make_flight_object(flight_data)
-    flight_object = AvailableFlight.new(flight_data[0],flight_data[1], flight_data[2],flight_data[3], flight_data[4])
-  end
 
-  def create_flight_data_sets (num_flights_available, all_flights)
+  def create_all_flight_data_sets(parsed_flights)
+    num_available_flights = parsed_flights[0]
+    all_flights = parsed_flights[1]
     flight_data_set = []
     all_available_flights_set = []
     
-    x = 0
-    num_flights_available.each do |index_length|
-      while index_length > x
-        flight_data_set << all_flights[x]
-        all_flights.delete_at(x)
-        all_flights.unshift(nil)
+    num_available_flights.map! do |num_of_flights|
+      x = 0
+      while x < num_of_flights
+        flight_data_set << all_flights.shift
+        puts all_flights.length
         x += 1
       end
       all_available_flights_set << flight_data_set
+      flight_data_set = []
     end
+    all_available_flights_set
+  end
+  
+  def make_flight_object(flight_data)
+    AvailableFlight.new(flight_data)
   end
 end
 

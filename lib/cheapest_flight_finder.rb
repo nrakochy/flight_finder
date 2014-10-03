@@ -1,51 +1,39 @@
+require File.join(File.expand_path(File.dirname(__FILE__)), 'available_flight_pool_reducer')
+
 class CheapestFlightFinder
   
   DESTINATION = 'Z'
   SECONDS_IN_HOUR = 3600
     
-  def cheapest_flight_path(all_available_flights, starting_point)
-    current_location = starting_point.from
-    last_arrival_time = starting_point.arrival
-    flight_routes_taken = [starting_point]
+  def find_cheapest_flight_path(all_available_flights, starting_point_obj)
+    current_location = starting_point_obj.from
+    last_arrival_time = starting_point_obj.arrival
+    flight_routes_taken = []
+    flight_obj = starting_point_obj
+    cheapest_choice = starting_point_obj
     
-    while flight_routes_taken.last.to != DESTINATION
-      routes_backwards_reduction = all_available_flights.does_not_go_backwards(current_location)
-      routes_location_reduction = reduce_available_departure_sites(current_location, routes_backwards_reduction)
-      valid_flight_options = eliminate_unavailable_departure_times(last_arrival_time, routes_location_reduction)
+    while cheapest_choice.to != DESTINATION
+      valid_flight_options = AvailableFlightPoolReducer.new.reduce_invalid_departure_sites_and_times_from_starting_point(current_location, last_arrival_time, all_available_flights)
       cheapest_choice = find_cheapest_choice(valid_flight_options)
       flight_routes_taken.push(cheapest_choice)
-      current_location = cheapest_choice.from
+      cheapest_choice.class
+      current_location = cheapest_choice.to
       last_arrival_time = cheapest_choice.arrival
+      cheapest_choice
     end
     
-    sum_total_flight_details(flight_routes_taken)
+    flight_itinerary = sum_total_flight_details(flight_routes_taken)
+    puts "Here is the cheapest flight itinerary inside the cheapest_flight_itinerary #{flight_itinerary}. Need to price edge case"
     
   end
-  
-  def flight_time(arrival, departure)
-    duration = (Time.parse(arrival) - Time.parse(departure))/SECONDS_IN_HOUR
-  end
-  
-  def does_not_go_backwards(current_location)
-    all_locations = ('A'..'Z').to_a
-    all_locations.delete_if{|flight| flight.departure < current_location}
-  end
-  
-  def reduce_available_departure_sites(current_location, reduced_flight_pool)
-    reduced_available_flights = []
-    reduced_available_flights = reduced_flight_pool.each{|possible_flight| reduced_available_flights.push(possible_flight) if current_location.include?(possible_flight.from)}
-  end
-  
-  def eliminate_unavailable_departure_times(last_arrival_time, reduced_available_flights)
-    available_flights.delete_if{|flight| flight.departure.to_i < last_arrival_time.to_i}
-  end
-  
+
   def find_cheapest_choice(valid_flight_options)
     cheapest_choice = nil
-    valid_flight_options.each do |valid_flight|
+    valid_flight_options.each do |valid_flight| 
       cheapest_choice ||= valid_flight
-      cheapest_choice = valid_flight if (valid_flight.price < cheapest_choice.price && valid_flight.flight_time(valid_flight.arrival, valid_flight.departure) < cheapest_choice.flight_time(cheapest_choice.arrival, cheapest_choice.departure)) || valid_flight.price < cheapest_choice.price
+      cheapest_choice = valid_flight if valid_flight.price < cheapest_choice.price
     end
+    cheapest_choice
   end
 
   
@@ -57,6 +45,10 @@ class CheapestFlightFinder
     
    [departure_time, arrival_time, cost]
     
+  end
+  
+  def flight_time(arrival, departure)
+    duration = (Time.parse(arrival) - Time.parse(departure))/SECONDS_IN_HOUR
   end
   
 end

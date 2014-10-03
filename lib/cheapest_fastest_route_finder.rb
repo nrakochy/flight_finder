@@ -1,3 +1,4 @@
+require File.join(File.expand_path(File.dirname(__FILE__)), 'file_parser')
 require File.join(File.expand_path(File.dirname(__FILE__)), 'flight_creator')
 require File.join(File.expand_path(File.dirname(__FILE__)), 'available_flight')
 require File.join(File.expand_path(File.dirname(__FILE__)), 'fastest_flight_finder')
@@ -5,19 +6,31 @@ require File.join(File.expand_path(File.dirname(__FILE__)), 'cheapest_flight_fin
 
 class CheapestFastestRouteFinder
   
-  def find_the_flight_paths(textfile)
-    starting_location = AvailableFlight.new('A', nil, "00:00", nil, nil)
-    all_flight_data_sets = FlightCreator.new.evaluate_flight_data
-    all_flight_data_sets.each do |data_set|
-      cheapest_flight = CheapestFlightFinder.new.cheapest_flight_path(data_set, starting_location)
-      sleep(2)
-      puts cheapest_flight
-      fastest_flight = FastestFlightFinder.new.fastest_flight_path(data_set)
-      sleep(2)
-      puts fastest_flight
+  def initialize flight_file
+  end
+  
+  def find_the_flight_paths flight_file
+    open_data_file = FileParser.new(flight_file).open_and_parse_flight_file(flight_file)
+    all_flight_data_sets = FlightCreator.new(open_data_file).evaluate_flight_data(open_data_file)
+    flight_paths = iterate_flight_data_sets(all_flight_data_sets)
+  end
+    
+  def iterate_flight_data_sets all_flight_data_sets 
+    starting_location = AvailableFlight.new("A A nil nil nil")
+    number_of_flight_sets = all_flight_data_sets.length
+    x = 0 
+    while x < number_of_flight_sets
+      flight_data_set = all_flight_data_sets[x]
+      cheapest_flight = CheapestFlightFinder.new.find_cheapest_flight_path(flight_data_set, starting_location)
+      puts "Here is the cheapest flight itinerary inside the main #{cheapest_flight}. Need to price edge case"
+      fastest_flight = FastestFlightFinder.new.find_fastest_flight_path(flight_data_set)
+      puts "Here is fastest flight inside the main #{fastest_flight}"
+      x += 1
     end
+    puts "Behold, the cheapest flight itinerary - #{cheapest_flight}"
+    puts "And also, the fastest flight itinerary- #{fastest_flight}"
   end
   
 end
 
-CheapestFastestRouteFinder.new.find_the_flight_paths('input.txt')
+CheapestFastestRouteFinder.new('input.txt').find_the_flight_paths('input.txt')
