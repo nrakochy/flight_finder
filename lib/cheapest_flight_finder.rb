@@ -12,11 +12,9 @@ class CheapestFlightFinder
     while cheapest_choice.to != DESTINATION
       current_location = cheapest_choice.to
       last_arrival_time = cheapest_choice.arrival
-      puts "Here's all_available_flights.length #{all_available_flights.length}"
       valid_flight_options = AvailableFlightPoolReducer.new.reduce_invalid_departure_sites_and_times_from_starting_point(current_location, last_arrival_time, all_available_flights)
       cheapest_choice = find_cheapest_choice(valid_flight_options)
       flight_routes_taken.push(cheapest_choice)
-      puts "Here is flight routes taken #{flight_routes_taken}"
       cheapest_choice
     end
       sum_total_flight_details(flight_routes_taken)

@@ -31,10 +31,10 @@ class FlightCreator
   def create_all_flight_data_sets(parsed_flights)
     num_available_flights = parsed_flights[0]
     all_flights = parsed_flights[1]
-    flight_data_set = []
     all_available_flights_set = []
     
     num_available_flights.map do |num_of_flights|
+      flight_data_set = []
       x = 0
       while x < num_of_flights
         flight_data_set << all_flights.shift

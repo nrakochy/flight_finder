@@ -7,12 +7,12 @@ class FastestFlightFinder
   DESTINATION = 'Z'
   
   def find_fastest_flight_path all_available_flights
-    final_flight_route = identify_final_flight_route(all_available_flights)
+    final_flight_route = identify_final_route(all_available_flights)
     fastest_flight_path = identify_fastest_flight_sequence(all_available_flights, final_flight_route)
     sum_total_flight_details(fastest_flight_path)
   end
   
-  def identify_final_flight_route all_available_flights
+  def identify_final_route all_available_flights
     terminating_flights = identify_flights_terminating_at_destination(all_available_flights)
     final_flight_route = nil
     
@@ -38,8 +38,8 @@ class FastestFlightFinder
     
     while next_fastest_choice.from != STARTING_POINT
         valid_flight_options = AvailableFlightPoolReducer.new.reduce_invalid_departure_sites_and_times_from_destination_point(next_route_destination, next_arrival_time, all_available_flights)
-        next_fastest_choice = find_fastest_flight(valid_flight_options)
-        flight_routes_taken.unshift(fastest_choice)
+        next_fastest_choice = identify_fastest_flight_route(valid_flight_options)
+        flight_routes_taken.unshift(next_fastest_choice)
         next_route_destination = next_fastest_choice.from
         next_arrival_time = next_fastest_choice.departure
         next_fastest_choice
@@ -48,7 +48,7 @@ class FastestFlightFinder
     flight_routes_taken
   end    
   
-	def sum_total_flight_details(flight_routes_taken)
+	def sum_total_flight_details flight_routes_taken
     cost = 0
     flight_routes_taken.each{|flight_obj| cost += flight_obj.price}
     [flight_routes_taken.first.departure, flight_routes_taken.last.arrival, cost]
