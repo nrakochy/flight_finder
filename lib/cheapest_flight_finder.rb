@@ -2,46 +2,47 @@ require File.join(File.expand_path(File.dirname(__FILE__)), 'available_flight_po
 
 class CheapestFlightFinder
   
-  DESTINATION = 'Z'
-  SECONDS_IN_HOUR = 3600
     
-  def find_cheapest_flight_path(all_available_flights, starting_point_obj)
-    flight_routes_taken = []
-    cheapest_choice = starting_point_obj
-    
-    while cheapest_choice.to != DESTINATION
-      current_location = cheapest_choice.to
-      last_arrival_time = cheapest_choice.arrival
-      valid_flight_options = AvailableFlightPoolReducer.new.reduce_invalid_departure_sites_and_times_from_starting_point(current_location, last_arrival_time, all_available_flights)
-      cheapest_choice = find_cheapest_choice(valid_flight_options)
-      flight_routes_taken.push(cheapest_choice)
-      cheapest_choice
-    end
-      sum_total_flight_details(flight_routes_taken)
+  def find_cheapest_flight_path(valid_flight_options)
+    flight_paths_with_total_cost = add_total_cost_of_flight_path(valid_flight_options)
+    cheapest_flight_path_with_cost = identify_cheapest_flight_path(flight_paths_with_total_cost)
+    summarize_total_flight_details(cheapest_flight_path_with_cost)
   end
 
-  def find_cheapest_choice(valid_flight_options)
-    cheapest_choice = nil
-    valid_flight_options.each do |valid_flight| 
-      cheapest_choice ||= valid_flight
-      cheapest_choice = valid_flight if valid_flight.price < cheapest_choice.price
+  def identify_cheapest_flight_path(flight_paths_with_total_cost)
+    cheapest_flight_path_with_cost = nil
+    
+    flight_paths_with_total_cost.each do |flight_path_arr_with_cost|
+      cheapest_flight_path_with_cost ||= flight_path_arr_with_cost
+      cheapest_flight_path_with_cost = flight_path_arr_with_cost if flight_path_arr_with_cost[1] < cheapest_flight_path_with_cost[1]
     end
-    cheapest_choice
+    cheapest_flight_path_with_cost
   end
-
   
-  def sum_total_flight_details(total_flight_routes)
-    departure_time = total_flight_routes.first.departure
-    arrival_time = total_flight_routes.last.arrival
-    cost = 0
-    total_flight_routes.each{|flight_obj| cost += flight_obj.price}
+  def add_total_cost_of_flight_path(valid_flight_options)
+    flight_paths_with_total_cost = []
+    valid_flight_options.each do |valid_flight_path| 
+      cost_of_flight_path = 0
+      if valid_flight_path.length > 1
+        valid_flight_path.each{|flight_obj| cost_of_flight_path += flight_obj.price}
+        flight_paths_with_total_cost << [valid_flight_path, cost_of_flight_path]
+      else 
+        flight_paths_with_total_cost << [valid_flight_path, valid_flight_path.first.price]
+      end
+    end
+    flight_paths_with_total_cost
+  end
+  
+    
+  
+  def summarize_total_flight_details(cheapest_flight_path_with_cost)
+    departure_time = cheapest_flight_path_with_cost[0].first.departure
+    arrival_time = cheapest_flight_path_with_cost[0].last.arrival
+    cost = cheapest_flight_path_with_cost[1]
     
    [departure_time, arrival_time, cost]
     
   end
   
-  def flight_time(arrival, departure)
-    duration = (Time.parse(arrival) - Time.parse(departure))/SECONDS_IN_HOUR
-  end
   
 end

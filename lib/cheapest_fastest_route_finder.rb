@@ -22,21 +22,19 @@ class CheapestFastestRouteFinder
     answer_set_array = []
     cheapest_fastest_flights = []
     all_flight_data_sets.each do |flight_data_set|     
-      starting_location = AvailableFlight.new("A A nil nil nil")
+      starting_location = AvailableFlight.new("A A 00:00 nil nil")
       destination = 'Z'
-      binding.pry 
-      all_compiled_possible_flight_paths = AllPossibleFlightPathCompiler.new(starting_location.from, destination, flight_data_set).find_all_possible_flight_path_route_options(starting_location.from, destination, flight_data_set)
-      binding.pry   
-=begin
-      cheapest_flight = CheapestFlightFinder.new.find_cheapest_flight_path(flight_data_set, starting_location)
-      puts "Here is the cheapest flight path #{cheapest_flight}"
-      answer_set_array << cheapest_flight
-      fastest_flight = FastestFlightFinder.new.find_fastest_flight_path(flight_data_set)
-      answer_set_array << fastest_flight
-      puts "Here is the fastest flight path #{fastest_flight}"
+      all_compiled_possible_flight_paths = AllPossibleFlightPathCompiler.new(starting_location.from, destination, starting_location.departure, flight_data_set).find_all_possible_flight_path_route_options(starting_location.from, destination, starting_location.departure, flight_data_set) 
+      puts "IN THE MAIN- Made it with this length of possible_flights #{all_compiled_possible_flight_paths.length} "
+      cheapest_flight_path = CheapestFlightFinder.new.find_cheapest_flight_path(all_compiled_possible_flight_paths)
+      puts "Here is the cheapest flight path #{cheapest_flight_path}"
+      answer_set_array << cheapest_flight_path
+      fastest_flight_path = FastestFlightFinder.new.find_fastest_flight_path(all_compiled_possible_flight_paths)
+      answer_set_array << fastest_flight_path
+      puts "Here is the fastest flight path #{fastest_flight_path}"
       cheapest_fastest_flights << answer_set_array 
-=end
     end
+    puts "Here is the answer sets #{answer_set_array}"
   end
   
 end
